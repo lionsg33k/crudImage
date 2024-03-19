@@ -23,6 +23,7 @@ class ImageController extends Controller
     {
         request()->validate([
             "image" => "required|mimes:png,jpg|max:2048"
+        
         ]);
 
         $image = $request->file("image");
@@ -71,6 +72,26 @@ class ImageController extends Controller
     {
         Storage::disk("public")->delete("img/" . $image->image);
         $image->delete();
+        return back();
+    }
+
+    public function url_store(Request $request){
+        //* validate  url  
+        request()->validate([
+            "link"=>"required|url"
+        ]);
+        //* to get the content  of the url ex : if the url content is an  image  the  method get_file_content  take  the  image and store  it in a variable
+        $imagelink = file_get_contents($request->link);
+        //* take  the file extension 
+        $excetion = pathinfo($request->link, PATHINFO_EXTENSION);
+        //* generating file name 
+        $filename = uniqid() . "." . $excetion;
+        //*  download  the image and store  it in Public folder 
+        Storage::put("public/img/" . $filename, $imagelink);
+        //*  create database row 
+        Image::create([
+            "image"=>$filename,
+        ]);
         return back();
     }
 }

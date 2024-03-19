@@ -42,7 +42,13 @@
         </form>
         <hr>
         <hr>
-    @endforeach
+        @endforeach
+        {{-- link --}}
+        <form action="{{ route("image.urlstore") }}" method="post">
+            @csrf
+            <input type="url" name="link" placeholder="paste link">
+            <button>save</button>
+        </form>
 </body>
 
 </html>
